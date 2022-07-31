@@ -1,10 +1,26 @@
-https://sekolahkoding.com/forum/laravel-cara-mengatasi-syntax-error-or-access-violation-1071
-php artisan make:migration create_order_status_table
-php artisan make:migration add_foreign_keys_detail_user --table=detail_user
-php artisan make:model AdvantageUser
-php artisan make:controller NameController --resource
-php artisan cache:clear
-php artisan route:clear
-php artisan config:clear
-php artisan key:generate
-php artisan migrate:fresh --seed
+
+Halo semua, dikarenakan ada update Breeze versi 1.10, maka diharapkan teman-teman bisa mengikuti step ini agar bisa melanjutkan tutorial di video
+
+1. Buka composer.json, ganti versi laravel/breeze dari versi sekarang menjadi ^1.4.
+2. Hapus folder vendor dan node_modules
+3. Jalankan composer update
+4. Jalankan php artisan breeze:install
+5. Jalankan npm install
+6. Jalankan npm run dev
+7. check file app.blade.php dan guest.blade.php di folder resources/views/layouts. Jika terdapat code "@vite(['resources/css/app.css', 'resources/js/app.js'])" silahkan dihapus. Lalu tambahkan dua baris code ini
+<!-- Styles -->
+        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
+        <!-- Scripts -->
+        <script src="{{ asset('js/app.js') }}" defer></script>
+8. Hapus file vite.config.js
+9. buka package.json, pastikan isi dari variable scripts seperti ini
+"scripts": {
+    "dev": "npm run development",
+    "development": "mix",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000",
+    "hot": "mix watch --hot",
+    "prod": "npm run production",
+    "production": "mix --production"
+},

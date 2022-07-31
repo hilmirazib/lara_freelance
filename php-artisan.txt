@@ -1,0 +1,10 @@
+https://sekolahkoding.com/forum/laravel-cara-mengatasi-syntax-error-or-access-violation-1071
+php artisan make:migration create_order_status_table
+php artisan make:migration add_foreign_keys_detail_user --table=detail_user
+php artisan make:model AdvantageUser
+php artisan make:controller NameController --resource
+php artisan cache:clear
+php artisan route:clear
+php artisan config:clear
+php artisan key:generate
+php artisan migrate:fresh --seed
