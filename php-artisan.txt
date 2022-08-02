@@ -8,3 +8,5 @@ php artisan route:clear
 php artisan config:clear
 php artisan key:generate
 php artisan migrate:fresh --seed
+
+php artisan make:request Dashboard/Service/StoreServiceRequest
