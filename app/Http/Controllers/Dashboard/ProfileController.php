@@ -3,10 +3,29 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+// use Illuminate\Http\Request;
+
+use App\Http\Requests\Dashboard\Profile\UpdateProfileRequest;
+use App\Http\Requests\Dashboard\Profile\UpdateDetailUserRequest;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+use File;
+use Auth;
+
+use App\Models\User;
+use App\Models\DetailUser;
+use App\Models\ExperienceUser;
 
 class ProfileController extends Controller
 {
+    public function __construct()
+    {   
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +33,11 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        return view('pages.dashboard.profile');
+        $user = User::where('id', Auth::user()->id)->first();
+        $experience_user = ExperienceUser::where('detail_user_id', $user->detail_user->id)
+                                        ->orderBy('id', 'asc')
+                                        ->get();
+        return view('pages.dashboard.profile', compact('user', 'experience_user'));
     }
 
     /**
@@ -24,7 +47,7 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -35,7 +58,7 @@ class ProfileController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -46,7 +69,7 @@ class ProfileController extends Controller
      */
     public function show($id)
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -57,7 +80,7 @@ class ProfileController extends Controller
      */
     public function edit($id)
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -67,10 +90,63 @@ class ProfileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProfileRequest $request_profile, UpdateDetailUserRequest $request_detail_user)
     {
-        //
+        $data_profile = $request_profile->all();
+        $data_detail_user = $request_detail_user->all();
+        // dd($data_profile);
+        // dd($data_detail_user);
+        //get photo user
+        $get_photo = DetailUser::where('users_id', Auth::user()->id)->first();
+        // delete old file from storage
+        if(isset($data_detail_user['photo'])){
+            $data = 'storage/' . $get_photo['photo'];
+            if(File::exists($data)){
+                File::delete($data);
+            }else{
+                File::delete('storage/app/public/' . $get_photo['photo']);
+            }
+        }
+
+        //store file to storage
+        if(isset($data_detail_user['photo'])){
+            $data_detail_user['photo'] = $request_detail_user->file('photo')->store(
+                'assets/photo', 'public'
+            );
+        }
+
+        //proses save to users table
+        $user = User::find(Auth::user()->id);
+        $user->update($data_profile);
+
+        //proses save to detail_iser
+        $detail_user = DetailUser::find($user->detail_user->id);
+        $detail_user->update($data_detail_user);
+
+        //prosess save to experience 
+        $experience_user_id = ExperienceUser::where('detail_user_id', $detail_user['id'])->first();
+        if(isset($experience_user_id)){
+            foreach ($data_profile['experience'] as $key => $value) {
+                $experience_user = ExperienceUser::find($key);
+                $experience_user->detail_user_id = $detail_user['id'];
+                $experience_user->experience = $value;
+                $experience_user->save();
+            }
+        }else{
+            foreach ($data_profile['experience'] as $key => $value) {
+                if(isset($value)){
+                    $experience_user = new ExperienceUser;
+                    $experience_user->detail_user_id = $detail_user['id'];
+                    $experience_user->experience = $value;
+                    $experience_user->save();
+                }
+            }
+        }
+        // toast()->success('Profile berhasil diperbarui');
+        toast()->success('Update has been success');
+        return back();
     }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -80,12 +156,29 @@ class ProfileController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return abort(404);
     }
 
     //delete
     public function delete()
     {
-        //
+        //get users
+        //get users
+        $get_user_photo = DetailUser::where('users_id', Auth::user()->id)->first();
+        $path_photo = $get_user_photo['photo'];
+        // second update value to null
+        $data = DetailUser::find($get_user_photo['id']);
+        $data->photo = null;
+        $data->save();
+
+        //delete file from storage
+        $data = 'storage/' . $path_photo;
+        if(File::exists($data)){
+            File::delete($data);
+        }else{
+            File::delete('storage/app/public/' . $path_photo);
+        }
+        toast()->success('Delete has been success');
+        return back();
     }
 }
