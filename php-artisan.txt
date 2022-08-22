@@ -9,4 +9,10 @@ php artisan config:clear
 php artisan key:generate
 php artisan migrate:fresh --seed
 
+php artisan storage:link
+
+realrashid.github.io
+composer require realrashid/sweet-alert
+php artisan sweetalert:publish
+
 php artisan make:request Dashboard/Service/StoreServiceRequest

@@ -28,25 +28,25 @@ class UpdateMyOrderRequest extends FormRequest
     {
         return [
             'buyer_id' => [
-                'nullable', 'integer', 
+                'nullable', 'integer',
             ],
             'freelancer_id' => [
                 'nullable', 'integer',
             ],
             'service' => [
-                'nullable', 'integer', 
+                'nullable', 'integer',
             ],
             'file' => [
-                'required', 'nimes.zip', 'max:1024', 
+                'required', 'mimes:zip', 'max:1024',
             ],
             'note' => [
-                'required', 'string', 'max:10000', 
+                'required', 'string', 'max:10000',
             ],
             'expired' => [
-                'nullable', 'date',  
+                'nullable', 'date',
             ],
             'order_status_id' => [
-                'nullable', 'integer', 
+                'nullable', 'integer',
             ],
         ];
     }

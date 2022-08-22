@@ -21,7 +21,7 @@ class Service extends Model
 
     protected $fillable = [
         'users_id',
-        'titile',
+        'title',
         'description',
         'delivery_time',
         'revision_limit',
@@ -64,5 +64,4 @@ class Service extends Model
     {
         return $this->hasMany('App\Models\ThumbnailService', 'service_id');
     }
-
 }

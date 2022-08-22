@@ -22,7 +22,7 @@ use App\Models\User;
 class RequestController extends Controller
 {
     public function __construct()
-    {   
+    {
         $this->middleware('auth');
     }
     /**
@@ -32,8 +32,8 @@ class RequestController extends Controller
      */
     public function index()
     {
-        $oders = Order::where('buyer_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
-        return view('pages.dashboard.request.index', compact('oders'));
+        $orders = Order::where('buyer_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+        return view('pages.dashboard.request.index', compact('orders'));
     }
 
     /**

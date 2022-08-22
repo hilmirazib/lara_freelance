@@ -28,7 +28,7 @@ use App\Models\Tagline;
 class MyOrderController extends Controller
 {
     public function __construct()
-    {   
+    {
         $this->middleware('auth');
     }
     /**
@@ -38,8 +38,8 @@ class MyOrderController extends Controller
      */
     public function index()
     {
-        $oders = Order::where('freelancer_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
-        return view('pages.dashboard.order.index', compact('oders'));
+        $orders = Order::where('freelancer_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+        return view('pages.dashboard.order.index', compact('orders'));
     }
 
     /**
@@ -101,9 +101,10 @@ class MyOrderController extends Controller
     public function update(UpdateMyOrderRequest $request, Order $order)
     {
         $data = $request->all();
-        if(isset($data['file'])){
+        if (isset($data['file'])) {
             $data['file'] = $request->file('file')->store(
-                'assets/order/attachment', 'public'
+                'assets/order/attachment',
+                'public'
             );
         }
         $order = Order::find($order->id);
@@ -146,5 +147,4 @@ class MyOrderController extends Controller
         toast('Reject order has been success');
         return back();
     }
-    
 }
